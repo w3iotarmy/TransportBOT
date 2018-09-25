@@ -39,6 +39,7 @@
                 android:layout_marginRight="10dp"/>
 
             <include
+                android:visibility="invisible"
                 layout="@layout/button_my_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

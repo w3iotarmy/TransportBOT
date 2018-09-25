@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="vertical"
+    android:visibility="gone"
     android:padding="5dp">
 
     <RelativeLayout
