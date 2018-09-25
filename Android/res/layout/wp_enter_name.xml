@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:id="@+id/wpNameDetails"
+    android:layout_height="match_parent">
+
+
+    <EditText
+        android:id="@+id/enterWpName"
+        android:layout_marginTop="80dp"
+        android:layout_marginLeft="20dp"
+        android:layout_width="343dp"
+        android:layout_height="100dp" />
+
+    <Button
+        android:id="@+id/wp"
+        android:text="Save"
+        android:textStyle="bold"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"/>
+
+</LinearLayout>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/alertWpName"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#932727"
+            android:textColor="#f7f5f5"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:text="Drone Waypoint Path List"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/settime"
+            android:layout_marginTop="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#0db1c4"
+            android:textStyle="bold"
+            android:text="Tap Here To Set Current Time"
+            android:textColor="#ffffff" />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="3dp"
+        android:id="@+id/nameRv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </android.support.v7.widget.RecyclerView>
+</LinearLayout>
