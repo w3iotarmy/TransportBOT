@@ -1,12 +1,24 @@
 package org.droidplanner.android.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -17,13 +29,54 @@ import org.droidplanner.android.fragments.WidgetsListFragment;
 import org.droidplanner.android.fragments.actionbar.ActionBarTelemFragment;
 import org.droidplanner.android.utils.Utils;
 
+import java.lang.ref.WeakReference;
+
 public class FlightActivity extends DrawerNavigationUI implements SlidingUpPanelLayout.PanelSlideListener {
 
     private static final String EXTRA_IS_ACTION_DRAWER_OPENED = "extra_is_action_drawer_opened";
     private static final boolean DEFAULT_IS_ACTION_DRAWER_OPENED = true;
 
     private FlightDataFragment flightData;
+    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case UsbService.ACTION_USB_PERMISSION_GRANTED: // USB PERMISSION GRANTED
+                    Toast.makeText(context, "USB Ready", Toast.LENGTH_SHORT).show();
+                    break;
+                case UsbService.ACTION_USB_PERMISSION_NOT_GRANTED: // USB PERMISSION NOT GRANTED
+                    Toast.makeText(context, "USB Permission not granted", Toast.LENGTH_SHORT).show();
+                    break;
+                case UsbService.ACTION_NO_USB: // NO USB CONNECTED
+                    Toast.makeText(context, "No USB connected", Toast.LENGTH_SHORT).show();
+                    break;
+                case UsbService.ACTION_USB_DISCONNECTED: // USB DISCONNECTED
+                    Toast.makeText(context, "USB disconnected", Toast.LENGTH_SHORT).show();
+                    break;
+                case UsbService.ACTION_USB_NOT_SUPPORTED: // USB NOT SUPPORTED
+                    Toast.makeText(context, "USB device not supported", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
+    private UsbService usbService;
+    //private TextView display;
+    //private EditText editText;
+    private String TAG ="Borhan";
+    private CheckBox box9600, box38400;
+    private MyHandler mHandler;
+    private final ServiceConnection usbConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName arg0, IBinder arg1) {
+            usbService = ((UsbService.UsbBinder) arg1).getService();
+            usbService.setHandler(mHandler);
+        }
 
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            usbService = null;
+        }
+    };
     @Override
     public void onDrawerClosed() {
         super.onDrawerClosed();
@@ -75,6 +128,26 @@ public class FlightActivity extends DrawerNavigationUI implements SlidingUpPanel
 
         if (isActionDrawerOpened)
             openActionDrawer();
+        mHandler = new MyHandler(this);
+
+        //display = (TextView) findViewById(R.id.textView1);
+        //editText = (EditText) findViewById(R.id.editText1);
+        /*Button sendButton = (Button) findViewById(R.id.buttonSend);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String data = "Borhan";//editText.getText().toString();
+                if (usbService != null) { // if UsbService was correctly binded, Send data
+                    usbService.write(data.getBytes());
+                }
+                *//*if (!editText.getText().toString().equals("")) {
+                    String data = "Borhan";//editText.getText().toString();
+                    if (usbService != null) { // if UsbService was correctly binded, Send data
+                        usbService.write(data.getBytes());
+                    }
+                }*//*
+            }
+        });*/
     }
 
     @Override
@@ -185,5 +258,34 @@ public class FlightActivity extends DrawerNavigationUI implements SlidingUpPanel
 
     private void resetActionDrawerBottomMargin(){
         updateActionDrawerBottomMargin((int) getResources().getDimension(R.dimen.action_drawer_margin_bottom));
+    }
+    private static class MyHandler extends Handler {
+        private final WeakReference<FlightActivity> mActivity;
+        private String TAG= "Borhan MyHandler";
+
+        public MyHandler(FlightActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case UsbService.MESSAGE_FROM_SERIAL_PORT:
+                    String data = (String) msg.obj;
+                    //mActivity.get().display.append(data);
+                    Log.d(TAG, data);
+                    break;
+                case UsbService.CTS_CHANGE:
+                    Toast.makeText(mActivity.get(), "CTS_CHANGE",Toast.LENGTH_LONG).show();
+                    break;
+                case UsbService.DSR_CHANGE:
+                    Toast.makeText(mActivity.get(), "DSR_CHANGE",Toast.LENGTH_LONG).show();
+                    break;
+                case UsbService.SYNC_READ:
+                    String buffer = (String) msg.obj;
+                    //mActivity.get().display.append(buffer);
+                    break;
+            }
+        }
     }
 }

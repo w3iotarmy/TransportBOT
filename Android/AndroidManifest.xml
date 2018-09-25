@@ -33,7 +33,6 @@
     <uses-feature
         android:name="android.hardware.usb.host"
         android:required="false" />
-
     <!-- Support devices that don't have location services -->
     <uses-feature
         android:name="android.hardware.location.gps"
@@ -174,7 +173,10 @@
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":remote"></service>
-
+        <service
+            android:name="com.felhr.serialportexamplesync.UsbService"
+            android:enabled="true">
+        </service>
         <activity android:name=".activities.CustomVehicle"></activity>
     </application>
 
